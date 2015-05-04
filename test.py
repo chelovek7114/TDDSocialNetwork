@@ -61,20 +61,59 @@ class TestSocialNetwork(TestCase):
         sn = SocialNetwork()
         sn.cur_person = Person('Вася', 'пароль')
         fact = sn.main()[0]
-        expected = 'Здравствуйте, Вася. Что вы хотите? '
+        expected = 'Вася, что вы хотите? '
         self.assertEqual(fact, expected)
 
     def test_registration_and_sign_in(self):
         sn = SocialNetwork()
-        fact = sn.hello1()[1]('не знаю')[1]('нет')[1]('')[1]('Миша')[1]('пароль')[1]()
-        expected = 'Здравствуйте, Миша. Что вы хотите? '
+        fact = sn.hello1()[1]('не знаю')[1]('нет')[1]('')[1]('Миша')[1]('пароль')[1]('')
+        expected = 'Миша, что вы хотите? '
         self.assertEqual(fact[0], expected)
-        fact = sn.hello1()[1]('да')[1]('Миша')[1]('пароль')[1]()
-        expected = 'Здравствуйте, Миша. Что вы хотите? '
+        fact = sn.hello1()[1]('да')[1]('Миша')[1]('пароль')[1]('')
+        expected = 'Миша, что вы хотите? '
         self.assertEqual(fact[0], expected)
-        fact = sn.hello1()[1]('да')[1]('Миша')[1]('неправильный пароль')[1]()
+        fact = sn.hello1()[1]('да')[1]('Миша')[1]('неправильный пароль')[1]('')
         expected = 'Здравствуйте, вы зарегистрированы? (да, нет) '
         self.assertEqual(fact[0], expected)
-        fact = sn.hello1()[1]('да')[1]('Петя')[1]('пароль')[1]()
+        fact = sn.hello1()[1]('да')[1]('Петя')[1]('пароль')[1]('')
         expected = 'Здравствуйте, вы зарегистрированы? (да, нет) '
         self.assertEqual(fact[0], expected)
+
+    def test_add_friend(self):
+        sn = SocialNetwork()
+        sn.cur_person = Person('Петя', 'пароль')
+        sn.persons.append(sn.cur_person)
+        sn.persons.append(Person('Вася', 'пароль'))
+        fact = sn.add_friend('Петя')[0]
+        expected = 'Петя добавлен в друзья. Нажмите Enter для продолжения. '
+        self.assertEqual(fact, expected)
+        fact = sn.add_friend('Петя')[0]
+        expected = 'Петя уже итак у вас в друзьях. Нажмите Enter для продолжения. '
+        self.assertEqual(fact, expected)
+        fact = sn.add_friend('Миша')[0]
+        expected = 'Такого пользователя нет. Нажмите Enter для продолжения. '
+        self.assertEqual(fact, expected)
+
+    def test_show_friends(self):
+        sn = SocialNetwork()
+        sn.cur_person = Person('Петя', 'пароль')
+        sn.cur_person.friends.append(Person('Вася', 'пароль'))
+        sn.cur_person.friends.append(Person('Миша', 'пароль'))
+        fact = sn.show_friends()[0]
+        expected = 'Ваши друзья: Вася, Миша. Нажмите Enter для продолжения. '
+        self.assertEqual(fact, expected)
+
+    def test_remove_friend(self):
+        sn = SocialNetwork()
+        sn.cur_person = Person('Петя', 'пароль')
+        sn.cur_person.friends.append(Person('Вася', 'пароль'))
+        sn.cur_person.friends.append(Person('Миша', 'пароль'))
+        fact = sn.remove_friend('Саша')[0]
+        expected = 'Такого друга у вас итак нет. Нажмите Enter для продолжения. '
+        self.assertEqual(fact, expected)
+        fact = sn.remove_friend('Вася')[0]
+        expected = 'Вася удалён из ваших друзей. Нажмите Enter для продолжения. '
+        self.assertEqual(fact, expected)
+        fact = sn.remove_friend('Вася')[0]
+        expected = 'Такого друга у вас итак нет. Нажмите Enter для продолжения. '
+        self.assertEqual(fact, expected)
