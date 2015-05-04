@@ -40,3 +40,18 @@ class TestSocialNetwork(TestCase):
         fact = sn.sign_in2('пароль', 'Петя')[0]
         expected = 'Неправильный логин или пароль. Нажмите Enter для продолжения. '
         self.assertEqual(fact, expected)
+
+    def test_registration(self):
+        sn = SocialNetwork()
+        fact = sn.registration('Вася')[0]
+        expected = 'Регистрация. Введите пароль: '
+        self.assertEqual(fact, expected)
+        fact = sn.registration('')[0]
+        expected = 'Регистрация. Логин не может быть пустым. Повторите ввод: '
+        self.assertEqual(fact, expected)
+
+    def test_registration2(self):
+        sn = SocialNetwork()
+        fact = sn.registration2('пароль', 'Вася')[0]
+        expected = 'Поздравляем, вы зарегистрированы! Нажмите Enter для продолжения. '
+        self.assertEqual(fact, expected)

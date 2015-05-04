@@ -28,6 +28,15 @@ class SocialNetwork:
         else:
             return 'Неправильный логин или пароль. Нажмите Enter для продолжения. ', None
 
+    def registration(self, answer):
+        if answer:
+            return 'Регистрация. Введите пароль: ', None
+        else:
+            return 'Регистрация. Логин не может быть пустым. Повторите ввод: ', None
+
+    def registration2(self, answer, login):
+        return 'Поздравляем, вы зарегистрированы! Нажмите Enter для продолжения. ', None
+
 # self.cur_person = None
 
 #     def sign_in(self):
