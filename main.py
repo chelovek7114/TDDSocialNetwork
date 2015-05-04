@@ -3,79 +3,52 @@ __author__ = 'CHELOVEK7114'
 
 class SocialNetwork:
     def __init__(self):
-        pass
+        self.cur_person = None
+        self.persons = []
 
-    def hello1(self, answer):
-        return 'Здравствуйте, вы зарегистрированы? (да, нет) ', None
+    def hello1(self):
+        return 'Здравствуйте, вы зарегистрированы? (да, нет) ', lambda answer: self.hello2(answer)
 
     def hello2(self, answer):
         if answer == 'да':
-            return 'Вход. Введите логин: ', None
+            return 'Вход. Введите логин: ', lambda login: self.sign_in1(login)
         elif answer == 'нет':
-            return 'Регистрация. Введите логин: ', None
+            return 'Регистрация. Введите логин: ', lambda login: self.registration1(login)
         else:
-            return 'Вы зарегистрированы? (да, нет) ', None
+            return 'Вы зарегистрированы? (да, нет) ', lambda answer1: self.hello2(answer1)
 
-    def sign_in(self, answer):
-        if answer:
-            return 'Вход. Введите пароль: ', None
+    def sign_in1(self, login):
+        if login:
+            return 'Вход. Введите пароль: ', lambda password: self.sign_in2(password, login)
         else:
-            return 'Вход. Логин не может быть пустым. Повторите ввод: ', None
+            return 'Вход. Логин не может быть пустым. Повторите ввод: ', lambda login1: self.sign_in1(login1)
 
-    def sign_in2(self, answer, login):
-        if login == 'Вася':
-            return 'Здравствуйте, {0}. Что вы хотите? '.format(login), None
+    def sign_in2(self, password, login):
+        for person in self.persons:
+            if person.login == login and person.password == password:
+                self.cur_person = person
+                return 'Вход выполнен успешно. Нажмите Enter для продолжения. ', lambda: self.main()
+        return 'Неправильный логин или пароль. Нажмите Enter для продолжения. ', lambda: self.hello1()
+
+    def registration1(self, login):
+        if login:
+            return 'Регистрация. Введите пароль: ', lambda password: self.registration2(password, login)
         else:
-            return 'Неправильный логин или пароль. Нажмите Enter для продолжения. ', None
+            return (
+                'Регистрация. Логин не может быть пустым. Повторите ввод: ',
+                lambda login1: self.registration1(login1),
+            )
 
-    def registration(self, answer):
-        if answer:
-            return 'Регистрация. Введите пароль: ', None
-        else:
-            return 'Регистрация. Логин не может быть пустым. Повторите ввод: ', None
+    def registration2(self, password, login):
+        self.cur_person = Person(login, password)
+        self.persons.append(self.cur_person)
+        return 'Поздравляем, вы зарегистрированы! Нажмите Enter для продолжения. ', lambda: self.main()
 
-    def registration2(self, answer, login):
-        return 'Поздравляем, вы зарегистрированы! Нажмите Enter для продолжения. ', None
-
-# self.cur_person = None
-
-#     def sign_in(self):
-#         answer = input('Вы зарегистрированы? (да/нет/выход): ')
-#         while not (answer in ('да', 'нет', 'выход')):
-#             answer = input('Вы зарегистрированы? Введите "да", "нет" или "выход": ')
-#         if answer == 'выход':
-#             return
-#         if answer == 'да':
-#             name = input('Введите ваш логин: ')
-#             password = input('Введите ваш пароль: ')
-#             self.cur_person = None
-#             for person in self.persons:
-#                 if name == person.name and password == person.password:
-#                     self.cur_person = person
-#                     break
-#             if self.cur_person:
-#                 self.menu()
-#             else:
-#                 print('Неправильно введён логин или пароль')
-#                 self.sign_in()
-#         else:
-#             name = input('Введите логин: ')
-#             while name == '':
-#                 name = input('Логин не может быть пустым. Повторите ввод: ')
-#             password = input('Введите пароль: ')
-#             while password == '':
-#                 password = input('Логин не может быть пустым. Повторите ввод: ')
-#             self.cur_person = Person(name, password)
-#             self.persons.append(self.cur_person)
-#             self.menu()
-#
-#     def menu(self):
-#         print('Hello ' + self.cur_person.name + '!!!')
-#
-#
-# class Person:
-#     def __init__(self, name, password):
-#         self.password = password
+    def main(self):
+        return 'Здравствуйте, {0}. Что вы хотите? '.format(self.cur_person.login), None
 
 
-#         self.name = name
+class Person:
+    def __init__(self, login, password):
+        self.login = login
+        self.password = password
