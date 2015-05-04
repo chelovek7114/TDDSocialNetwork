@@ -6,6 +6,13 @@ class SocialNetwork:
         self.cur_person = None
         self.persons = []
 
+    def run(self):
+        question = self.hello1()
+        answer = None
+        while answer != '!':
+            answer = input(question[0])
+            question = question[1](answer)
+
     def hello1(self):
         return 'Здравствуйте, вы зарегистрированы? (да, нет) ', lambda answer: self.hello2(answer)
 
@@ -100,3 +107,5 @@ class Person:
         self.login = login
         self.password = password
         self.friends = []
+
+SocialNetwork().run()
