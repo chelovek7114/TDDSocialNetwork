@@ -1,4 +1,4 @@
-from unittest import TestCase
+﻿from unittest import TestCase
 from main import SocialNetwork, Person
 
 __author__ = 'CHELOVEK7114'
@@ -57,10 +57,10 @@ class TestSocialNetwork(TestCase):
         expected = 'Поздравляем, вы зарегистрированы! Нажмите Enter для продолжения. '
         self.assertEqual(fact, expected)
 
-    def test_main(self):
+    def test_main1(self):
         sn = SocialNetwork()
         sn.cur_person = Person('Вася', 'пароль')
-        fact = sn.main()[0]
+        fact = sn.main1()[0]
         expected = 'Вася, что вы хотите? '
         self.assertEqual(fact, expected)
 
@@ -116,4 +116,23 @@ class TestSocialNetwork(TestCase):
         self.assertEqual(fact, expected)
         fact = sn.remove_friend('Вася')[0]
         expected = 'Такого друга у вас итак нет. Нажмите Enter для продолжения. '
+        self.assertEqual(fact, expected)
+
+    def test_add_show_remove_friends(self):
+        sn = SocialNetwork()
+        sn.cur_person = Person('Петя', 'пароль')
+        sn.persons.append(sn.cur_person)
+        sn.persons.append(Person('Вася', 'пароль'))
+        sn.persons.append(Person('Миша', 'пароль'))
+        fact = sn.main2('удалить')[0]
+        expected = 'Неправильный запрос, повторите ввод: '
+        self.assertEqual(fact, expected)
+        fact = sn.main2('удалить Вася')[0]
+        expected = 'Такого друга у вас итак нет. Нажмите Enter для продолжения. '
+        self.assertEqual(fact, expected)
+        fact = sn.main2('добавить Вася')[0]
+        expected = 'Вася добавлен в друзья. Нажмите Enter для продолжения. '
+        self.assertEqual(fact, expected)
+        fact = sn.main2('друзья')[0]
+        expected = 'Ваши друзья: Вася. Нажмите Enter для продолжения. '
         self.assertEqual(fact, expected)

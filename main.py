@@ -1,4 +1,4 @@
-__author__ = 'CHELOVEK7114'
+﻿__author__ = 'CHELOVEK7114'
 
 
 class SocialNetwork:
@@ -27,7 +27,7 @@ class SocialNetwork:
         for person in self.persons:
             if person.login == login and person.password == password:
                 self.cur_person = person
-                return 'Вход выполнен успешно. Нажмите Enter для продолжения. ', lambda param: self.main()
+                return 'Вход выполнен успешно. Нажмите Enter для продолжения. ', lambda param: self.main1()
         return 'Неправильный логин или пароль. Нажмите Enter для продолжения. ', lambda param: self.hello1()
 
     def registration1(self, login):
@@ -42,10 +42,26 @@ class SocialNetwork:
     def registration2(self, password, login):
         self.cur_person = Person(login, password)
         self.persons.append(self.cur_person)
-        return 'Поздравляем, вы зарегистрированы! Нажмите Enter для продолжения. ', lambda param: self.main()
+        return 'Поздравляем, вы зарегистрированы! Нажмите Enter для продолжения. ', lambda param: self.main1()
 
-    def main(self):
-        return '{0}, что вы хотите? '.format(self.cur_person.login), None
+    def main1(self):
+        return '{0}, что вы хотите? '.format(self.cur_person.login), lambda request: self.main2(request)
+
+    def main2(self, request):
+        if request == 'выход':
+            return self.hello1()
+        elif request == 'друзья':
+            return self.show_friends()
+        elif request[:len('добавить')] == 'добавить':
+            if len(request.split()) == 2:
+                return self.add_friend(request.split()[1])
+            else:
+                return 'Неправильный запрос, повторите ввод: ', lambda request1: self.main2(request1)
+        elif request[:len('удалить')] == 'удалить':
+            if len(request.split()) == 2:
+                return self.remove_friend(request.split()[1])
+            else:
+                return 'Неправильный запрос, повторите ввод: ', lambda request1: self.main2(request1)
 
     def add_friend(self, friend_login):
         for person in self.persons:
@@ -53,15 +69,15 @@ class SocialNetwork:
                 if person in self.cur_person.friends:
                     return (
                         '{0} уже итак у вас в друзьях. Нажмите Enter для продолжения. '.format(friend_login),
-                        lambda param: self.main()
+                        lambda param: self.main1()
                     )
                 else:
                     self.cur_person.friends.append(person)
                     return (
                         '{0} добавлен в друзья. Нажмите Enter для продолжения. '.format(friend_login),
-                        lambda param: self.main()
+                        lambda param: self.main1()
                     )
-        return 'Такого пользователя нет. Нажмите Enter для продолжения. ', lambda param: self.main()
+        return 'Такого пользователя нет. Нажмите Enter для продолжения. ', lambda param: self.main1()
 
     def show_friends(self):
         answer = 'Ваши друзья: '
@@ -69,14 +85,14 @@ class SocialNetwork:
             answer += person.login + ', '
         if self.cur_person.friends:
             answer = answer[:-2]
-        return answer + '. Нажмите Enter для продолжения. ', lambda param: self.main()
+        return answer + '. Нажмите Enter для продолжения. ', lambda param: self.main1()
 
     def remove_friend(self, friend_login):
         for friend in self.cur_person.friends:
             if friend.login == friend_login:
                 self.cur_person.friends.remove(friend)
-                return 'Вася удалён из ваших друзей. Нажмите Enter для продолжения. ', lambda param: self.main()
-        return 'Такого друга у вас итак нет. Нажмите Enter для продолжения. ', lambda param: self.main()
+                return 'Вася удалён из ваших друзей. Нажмите Enter для продолжения. ', lambda param: self.main1()
+        return 'Такого друга у вас итак нет. Нажмите Enter для продолжения. ', lambda param: self.main1()
 
 
 class Person:
