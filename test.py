@@ -136,3 +136,42 @@ class TestSocialNetwork(TestCase):
         fact = sn.main2('друзья')[0]
         expected = 'Ваши друзья: Вася. Нажмите Enter для продолжения. '
         self.assertEqual(fact, expected)
+
+    def test_send_message1(self):
+        sn = SocialNetwork()
+        sn.cur_person = Person('Петя', 'пароль')
+        sn.persons.append(sn.cur_person)
+        sn.persons.append(Person('Вася', 'пароль'))
+        sn.persons.append(Person('Миша', 'пароль'))
+        sn.cur_person.friends.append(sn.persons[1])
+        sn.persons[1].friends.append(sn.cur_person)
+        fact = sn.send_message1('Вася')[0]
+        expected = 'Введите сообщение: '
+        self.assertEqual(fact, expected)
+        fact = sn.send_message1('Миша')[0]
+        expected = 'Такого друга у вас нет или Вас нет у него в друзьях. Нажмите Enter для продолжения. '
+        self.assertEqual(fact, expected)
+
+    def test_send_message2(self):
+        sn = SocialNetwork()
+        sn.cur_person = Person('Петя', 'пароль')
+        sn.persons.append(sn.cur_person)
+        sn.persons.append(Person('Вася', 'пароль'))
+        sn.persons.append(Person('Миша', 'пароль'))
+        sn.cur_person.friends.append(sn.persons[0])
+        fact = sn.send_message2('Привет, Петя!', sn.cur_person.friends[0])[0]
+        expected = 'Сообщение успешно отправлено. Нажмите Enter для продолжения. '
+        self.assertEqual(fact, expected)
+
+    def test_show_messages(self):
+        sn = SocialNetwork()
+        sn.cur_person = Person('Петя', 'пароль')
+        sn.persons.append(sn.cur_person)
+        sn.persons.append(Person('Вася', 'пароль'))
+        sn.persons.append(Person('Миша', 'пароль'))
+        sn.cur_person.friends.append(sn.persons[1])
+        sn.cur_person.messages.append((sn.cur_person.friends[0], 'Привет, Петя!'))
+        sn.cur_person.messages.append((sn.cur_person.friends[0], 'Как дела?'))
+        fact = sn.show_messages()[0]
+        expected = 'Ваши сообщения:\nВася: Привет, Петя!\nВася: Как дела?\nНажмите Enter для продолжения. '
+        self.assertEqual(fact, expected)

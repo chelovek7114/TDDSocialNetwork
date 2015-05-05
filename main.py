@@ -6,12 +6,12 @@ class SocialNetwork:
         self.cur_person = None
         self.persons = []
 
-    def run(self):
-        question = self.hello1()
-        answer = None
-        while answer != '!':
-            answer = input(question[0])
-            question = question[1](answer)
+    # def run(self):
+    #     question = self.hello1()
+    #     answer = None
+    #     while answer != '!':
+    #         answer = input(question[0])
+    #         question = question[1](answer)
 
     def hello1(self):
         return 'Здравствуйте, вы зарегистрированы? (да, нет) ', lambda answer: self.hello2(answer)
@@ -101,11 +101,31 @@ class SocialNetwork:
                 return 'Вася удалён из ваших друзей. Нажмите Enter для продолжения. ', lambda param: self.main1()
         return 'Такого друга у вас итак нет. Нажмите Enter для продолжения. ', lambda param: self.main1()
 
+    def send_message1(self, friend_login):
+        for friend in self.cur_person.friends:
+            if friend.login == friend_login and self.cur_person in friend.friends:
+                return 'Введите сообщение: ', lambda message: self.send_message2(message, friend)
+        return (
+            'Такого друга у вас нет или Вас нет у него в друзьях. Нажмите Enter для продолжения. ',
+            lambda param: self.main1()
+        )
+
+    def send_message2(self, message, friend):
+        friend.messages.append((self.cur_person, message))
+        return 'Сообщение успешно отправлено. Нажмите Enter для продолжения. ', lambda param: self.main1()
+
+    def show_messages(self):
+        answer = 'Ваши сообщения:\n'
+        for sender, message in self.cur_person.messages:
+            answer += sender.login + ': ' + message + '\n'
+        return answer + 'Нажмите Enter для продолжения. ', lambda param: self.main1()
+
 
 class Person:
     def __init__(self, login, password):
         self.login = login
         self.password = password
         self.friends = []
+        self.messages = []
 
-SocialNetwork().run()
+# SocialNetwork().run()
