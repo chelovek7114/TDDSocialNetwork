@@ -59,16 +59,15 @@ class SocialNetwork:
             return self.hello1()
         elif request == 'друзья':
             return self.show_friends()
-        elif request[:len('добавить')] == 'добавить':
-            if len(request.split()) == 2:
-                return self.add_friend(request.split()[1])
-            else:
-                return 'Неправильный запрос, повторите ввод: ', lambda request1: self.main2(request1)
-        elif request[:len('удалить')] == 'удалить':
-            if len(request.split()) == 2:
-                return self.remove_friend(request.split()[1])
-            else:
-                return 'Неправильный запрос, повторите ввод: ', lambda request1: self.main2(request1)
+        elif request[:len('добавить')] == 'добавить' and len(request.split()) == 2:
+            return self.add_friend(request.split()[1])
+        elif request[:len('удалить')] == 'удалить' and len(request.split()) == 2:
+            return self.remove_friend(request.split()[1])
+        elif request[:len('отправить')] == 'отправить' and len(request.split()) == 2:
+            return self.send_message1(request.split()[1])
+        elif request == 'сообщения':
+            return self.show_messages()
+        return 'Неправильный запрос, повторите ввод: ', lambda request1: self.main2(request1)
 
     def add_friend(self, friend_login):
         for person in self.persons:

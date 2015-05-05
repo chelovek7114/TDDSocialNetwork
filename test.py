@@ -158,7 +158,7 @@ class TestSocialNetwork(TestCase):
         sn.persons.append(sn.cur_person)
         sn.persons.append(Person('Вася', 'пароль'))
         sn.persons.append(Person('Миша', 'пароль'))
-        sn.cur_person.friends.append(sn.persons[0])
+        sn.cur_person.friends.append(sn.persons[1])
         fact = sn.send_message2('Привет, Петя!', sn.cur_person.friends[0])[0]
         expected = 'Сообщение успешно отправлено. Нажмите Enter для продолжения. '
         self.assertEqual(fact, expected)
@@ -174,4 +174,20 @@ class TestSocialNetwork(TestCase):
         sn.cur_person.messages.append((sn.cur_person.friends[0], 'Как дела?'))
         fact = sn.show_messages()[0]
         expected = 'Ваши сообщения:\nВася: Привет, Петя!\nВася: Как дела?\nНажмите Enter для продолжения. '
+        self.assertEqual(fact, expected)
+
+    def test_send_show_messages(self):
+        sn = SocialNetwork()
+        sn.cur_person = Person('Петя', 'пароль')
+        sn.persons.append(sn.cur_person)
+        sn.persons.append(Person('Вася', 'пароль'))
+        sn.persons.append(Person('Миша', 'пароль'))
+        sn.cur_person.friends.append(sn.persons[1])
+        sn.persons[1].friends.append(sn.cur_person)
+        fact = sn.main2('отправить Вася')[1]('Привет, Вася!')[0]
+        expected = 'Сообщение успешно отправлено. Нажмите Enter для продолжения. '
+        self.assertEqual(fact, expected)
+        sn.cur_person = sn.persons[1]
+        fact = sn.main2('сообщения')[0]
+        expected = 'Ваши сообщения:\nПетя: Привет, Вася!\nНажмите Enter для продолжения. '
         self.assertEqual(fact, expected)
