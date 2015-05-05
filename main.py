@@ -6,12 +6,12 @@ class SocialNetwork:
         self.cur_person = None
         self.persons = []
 
-    # def run(self):
-    #     question = self.hello1()
-    #     answer = None
-    #     while answer != '!':
-    #         answer = input(question[0])
-    #         question = question[1](answer)
+    def run(self):
+        question = self.hello1()
+        answer = None
+        while answer != '!':
+            answer = input(question[0])
+            question = question[1](answer)
 
     def hello1(self):
         return 'Здравствуйте, вы зарегистрированы? (да, нет) ', lambda answer: self.hello2(answer)
@@ -97,7 +97,10 @@ class SocialNetwork:
         for friend in self.cur_person.friends:
             if friend.login == friend_login:
                 self.cur_person.friends.remove(friend)
-                return 'Вася удалён из ваших друзей. Нажмите Enter для продолжения. ', lambda param: self.main1()
+                return (
+                    '{0} удалён из ваших друзей. Нажмите Enter для продолжения. '.format(friend_login),
+                    lambda param: self.main1()
+                )
         return 'Такого друга у вас итак нет. Нажмите Enter для продолжения. ', lambda param: self.main1()
 
     def send_message1(self, friend_login):
@@ -127,4 +130,4 @@ class Person:
         self.friends = []
         self.messages = []
 
-# SocialNetwork().run()
+SocialNetwork().run()
